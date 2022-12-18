@@ -1,23 +1,31 @@
 <?php
 if (function_exists('add_theme_support')) add_theme_support('post-thumbnails');
 
+add_action('wp_enqueue_scripts', 'theme_add_scripts');
+function theme_add_scripts()
+{
+  wp_enqueue_style('style-name', get_stylesheet_uri());
+  wp_enqueue_script('script-name', get_template_directory_uri() . '/script.js', array(), '1.0', true);
+}
+
+
 add_shortcode('ip_loancalc', 'ip_loancalc');
 function ip_loancalc($atts)
 {
-    $atts = shortcode_atts([
-        'rate_value' => 0.007,
-        'rate_step' => 0.001,
-        'loan_amount_value'  => 100000,
-        'loan_amount_min'  => 1000,
-        'loan_amount_max'  => 1000000,
-        'loan_amount_step'  => 1000,
-        'months_value'  => 50,
-        'months_min'  => 0,
-        'months_max'  => 200,
-        'result_value'  => 2700,
-    ], $atts);
+  $atts = shortcode_atts([
+    'rate_value' => 0.007,
+    'rate_step' => 0.001,
+    'loan_amount_value'  => 100000,
+    'loan_amount_min'  => 1000,
+    'loan_amount_max'  => 1000000,
+    'loan_amount_step'  => 1000,
+    'months_value'  => 50,
+    'months_min'  => 0,
+    'months_max'  => 200,
+    'result_value'  => 2700,
+  ], $atts);
 
-    return "
+  return "
   <style>
     @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,regular,500,600,700,800,300italic,italic,500italic,600italic,700italic,800italic);
 
@@ -363,8 +371,14 @@ function ip_loancalc($atts)
           $('.loan-calculator__loan-amount').val({$atts['loan_amount_value']});
           $('.loan-calculator__months').val({$atts['months_value']});
           $('.loan-calculator__result').val({$atts['result_value']});
-          removeErr()
+           calc();
         }
+        $('.loan-calculator__loan-amount').keyup(function () {
+          calc();
+        });
+        $('.loan-calculator__months').keyup(function () {
+          calc();
+        });
       });
     </script>
   </div>";
